@@ -25,9 +25,11 @@ class FaceRecognizer:
         for face_encoding in self.face_encodings:
             face_distances = face_recognition.face_distance(self.known_faces, face_encoding)
 
+            nearest = 1.0
             name = None
             for i, face_dist in enumerate(face_distances):
-                if face_dist < self.tolerance:
+                if face_dist < self.tolerance and face_dist < nearest:
+                    nearest = face_dist
                     name = self.known_names[i]
 
             face_names.append(name)
