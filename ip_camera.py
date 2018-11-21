@@ -5,7 +5,6 @@ Author: @ichizero
 """
 
 
-import face_recognition
 import cv2
 
 from face_recognizer import FaceRecognizer
@@ -16,7 +15,7 @@ class IPCamera:
     Face recognition for IPCamera
     """
 
-    def __init__(self, url, faces_path):
+    def __init__(self, url, faces_path, tolerance):
         self.url = url
 
         # load stream video
@@ -29,7 +28,7 @@ class IPCamera:
         self.image_x = int(self.camera.get(cv2.CAP_PROP_FRAME_WIDTH))
         self.image_y = int(self.camera.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-        self.face_recognizer = FaceRecognizer(faces_path)
+        self.face_recognizer = FaceRecognizer(faces_path, tolerance)
 
     def __del__(self):
         self.camera.release()

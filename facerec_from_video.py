@@ -12,6 +12,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='facerec video')
     parser.add_argument('--video', help='video file path')
     parser.add_argument('--face', help='face dir path')
+    parser.add_argument('--tol', type=float, default=0.50, help='tolerance of recognition')
     args = parser.parse_args()
 
     # Open the input movie file
@@ -31,7 +32,7 @@ if __name__ == '__main__':
     progress = tqdm.tqdm(total=video_frame)
     progress.set_description("{:12}".format("Initialize"))
 
-    face_recognizer = FaceRecognizer(args.face)
+    face_recognizer = FaceRecognizer(args.face, args.tol)
 
     frame_number = 0
 
