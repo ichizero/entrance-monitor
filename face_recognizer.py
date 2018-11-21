@@ -60,7 +60,10 @@ class FaceRecognizer:
 
         for img_path in img_path_list:
             face_image = face_recognition.load_image_file(img_path)
-            face_encoding = face_recognition.face_encodings(face_image)[0]
+            res_encode = face_recognition.face_encodings(face_image)
+            if not res_encode:
+                continue
+            face_encoding = res_encode[0]
             known_faces.append(face_encoding)
             known_names.append(img_path.stem)
 

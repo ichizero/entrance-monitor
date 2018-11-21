@@ -35,7 +35,9 @@ class IPCamera:
 
     def get_frame(self):
         """ Returns estimated image """
-        _, frame = self.camera.read()
+        ret, frame = self.camera.read()
+        if not ret:
+            return None
 
         res_img = self.face_recognizer.recognize(frame)
 
