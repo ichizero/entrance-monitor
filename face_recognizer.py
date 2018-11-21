@@ -22,14 +22,11 @@ class FaceRecognizer:
 
         face_names = []
         for face_encoding in self.face_encodings:
-            # See if the face is a match for the known face(s)
-            match = face_recognition.compare_faces(self.known_faces, face_encoding, tolerance=0.50)
+            face_distances = face_recognition.face_distance(self.known_faces, face_encoding)
 
-            # If you had more than 2 faces, you could make this logic a lot prettier
-            # but I kept it simple for the demo
             name = None
-            for i, is_match in enumerate(match):
-                if is_match:
+            for i, face_dist in enumerate(face_distances):
+                if face_dist < self.tolerance:
                     name = self.known_names[i]
 
             face_names.append(name)

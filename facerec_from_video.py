@@ -2,7 +2,6 @@
 import os
 import argparse
 import tqdm
-import face_recognition
 import cv2
 
 from face_recognizer import FaceRecognizer
