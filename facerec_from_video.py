@@ -5,16 +5,17 @@ import tqdm
 import face_recognition
 import cv2
 
+from known_faces import load_faces
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='facerec video')
     parser.add_argument('--video', help='video file path')
-    parser.add_argument('--face', help='face file path')
+    parser.add_argument('--face', help='face dir path')
     args = parser.parse_args()
 
     # Open the input movie file
     input_movie = cv2.VideoCapture(args.video)
-    length = int(input_movie.get(cv2.CAP_PROP_FRAME_COUNT))
 
     video_frame = input_movie.get(cv2.CAP_PROP_FRAME_COUNT)
     video_fps = input_movie.get(cv2.CAP_PROP_FPS)
@@ -26,13 +27,12 @@ if __name__ == '__main__':
     output_file_name = os.path.splitext(args.video)[0] + '_result.mp4'
     output_movie = cv2.VideoWriter(output_file_name, fourcc, video_fps, (image_x, image_y))
 
-    # Load some sample pictures and learn how to recognize them.
-    face_image = face_recognition.load_image_file(args.face)
-    face_encoding = face_recognition.face_encodings(face_image)[0]
+    # progress
+    progress = tqdm.tqdm(total=video_frame)
+    progress.set_description("{:12}".format("Initialize"))
 
-    known_faces = [
-        face_encoding
-    ]
+    # Load some sample pictures and learn how to recognize them.
+    known_faces, known_names = load_faces(args.face)
 
     # Initialize some variables
     face_locations = []
@@ -40,6 +40,7 @@ if __name__ == '__main__':
     face_names = []
     frame_number = 0
 
+    progress.set_description("{:12}".format("Processing"))
     while True:
         # Grab a single frame of video
         ret, frame = input_movie.read()
@@ -64,8 +65,8 @@ if __name__ == '__main__':
             # If you had more than 2 faces, you could make this logic a lot prettier
             # but I kept it simple for the demo
             name = None
-            if match[0]:
-                name = "Face 1"
+            if match:
+                name = known_names[match[0]]
 
             face_names.append(name)
 
@@ -83,10 +84,13 @@ if __name__ == '__main__':
             cv2.putText(frame, name, (left + 6, bottom - 6), font, 0.5, (255, 255, 255), 1)
 
         # Write the resulting image to the output video file
-        print("Writing frame {} / {}".format(frame_number, length))
+        progress.update(1)
+        progress.set_postfix(timecode="{:.2f}s".format(frame_number / video_fps))
         output_movie.write(frame)
 
     # All done!
     input_movie.release()
     output_movie.release()
+    progress.set_description("{:12}".format("Finished"))
+    progress.close()
     print("Saved " + output_file_name)
