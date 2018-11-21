@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 import face_recognition
 import cv2
 
@@ -52,8 +53,7 @@ class FaceRecognizer:
         """ Loads known faces. """
         faces_path = Path(self.faces_path)
 
-        img_path_list = list(faces_path.glob("*.png"))
-        img_path_list.extend(list(faces_path.glob("*.jpg")))
+        img_path_list = [p for p in faces_path.glob("*") if re.search(r"^[^\.]*\.(png|jpg|py)$", str(p))]
 
         known_faces = []
         known_names = []
