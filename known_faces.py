@@ -17,6 +17,6 @@ def load_faces(img_path):
         face_image = face_recognition.load_image_file(img_path)
         face_encoding = face_recognition.face_encodings(face_image)[0]
         known_faces.append(face_encoding)
-        known_names.append(img_path.name)
+        known_names.append(img_path.stem)
 
     return (known_faces, known_names)
