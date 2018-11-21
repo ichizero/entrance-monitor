@@ -65,6 +65,6 @@ class FaceRecognizer:
                 continue
             face_encoding = res_encode[0]
             known_faces.append(face_encoding)
-            known_names.append(img_path.stem)
+            known_names.append(img_path.stem.split("_")[0])
 
         return (known_faces, known_names)
