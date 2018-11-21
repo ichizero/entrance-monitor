@@ -8,14 +8,14 @@ from face_recognizer import FaceRecognizer
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='facerec video')
+    parser = argparse.ArgumentParser(description='monitoring')
     parser.add_argument('--url', help='stream url')
     parser.add_argument('--face', help='face dir path')
     parser.add_argument('--tol', type=float, default=0.50, help='tolerance of recognition')
     args = parser.parse_args()
 
     # Open the input movie file
-    cam = cv2.VideoCapture(args.video)
+    cam = cv2.VideoCapture(args.url)
 
     video_fps = cam.get(cv2.CAP_PROP_FPS)
     image_x = int(cam.get(cv2.CAP_PROP_FRAME_WIDTH))
