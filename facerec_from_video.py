@@ -66,8 +66,6 @@ if __name__ == '__main__':
             name = None
             if match[0]:
                 name = "Face 1"
-            elif match[1]:
-                name = "Alex Lacamoire"
 
             face_names.append(name)
 
