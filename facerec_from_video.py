@@ -65,8 +65,8 @@ if __name__ == '__main__':
             # If you had more than 2 faces, you could make this logic a lot prettier
             # but I kept it simple for the demo
             name = None
-            if match:
-                name = known_names[match[0]]
+            for i, is_match in enumerate(match):
+                name = known_names[i]
 
             face_names.append(name)
 
