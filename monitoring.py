@@ -28,7 +28,7 @@ if __name__ == '__main__':
     while True:
         ret, frame = cam.read()
         if not ret:
-            break
+            continue
 
         res_img = face_recognizer.recognize(frame)
 
