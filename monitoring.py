@@ -36,9 +36,11 @@ if __name__ == '__main__':
         frame_time = datetime.now()
 
         res_img = face_recognizer.recognize(frame)
-        print("[detected] {date} {name}"
-                .format(date=frame_time.strftime("%Y/%m/%d %H:%M:%S"),
-                        name=face_recognizer.face_names))
+
+        if face_recognizer.face_names:
+            print("[detected] {date} {name}"
+                  .format(date=frame_time.strftime("%Y/%m/%d %H:%M:%S"),
+                          name=face_recognizer.face_names))
 
         for name in face_recognizer.face_names:
             if name is None:
