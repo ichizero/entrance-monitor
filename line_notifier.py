@@ -14,7 +14,7 @@ class LineNotifier:
     def notify(self, date, name):
         message = "{date} {name} さんが入室しました。".format(date=date.strftime("%H:%M"), name=name)
         json_message = {
-            'to' : [self.user_id],
+            'to' : self.user_id,
             'messages' : [
                 {
                     'type' : 'text',
