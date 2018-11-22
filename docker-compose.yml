@@ -8,8 +8,8 @@ services:
       - TZ=Asia/Tokyo
     env_file:
       - ./proxy.env
-    ports:
-      - "5001:5001"
+      - ./secret.env
     volumes:
       - ./:/workspace/face-recognition
     working_dir: /workspace/face-recognition
+    entrypoint: python monitoring.py --url=$CAM_URL --face=./faces/ --tol=0.4 --lt=$LINE_ACCESS_TOKEN --lu=$LINE_USER_ID
