@@ -29,9 +29,9 @@ if __name__ == '__main__':
     face_recognizer = FaceRecognizer(args.face, args.tol)
     notifier = SlackNotifier(args.slack)
 
-    init_time = datetime.now()
-    detected_dict = dict(zip(face_recognizer.face_names, [(init_time, 0) for i in range(len(face_recognizer.face_names))]))
-    recognized_dict = dict(zip(face_recognizer.face_names, [(init_time, 0) for i in range(len(face_recognizer.face_names))]))
+    init_time = datetime(2000, 1, 1)
+    detected_dict = dict(zip(face_recognizer.known_names, [(init_time, 0) for i in range(len(face_recognizer.known_names))]))
+    recognized_dict = dict(zip(face_recognizer.known_names, [init_time for i in range(len(face_recognizer.known_names))]))
 
     # Monitoring
     print("[log] Start monitoring...")
@@ -61,9 +61,8 @@ if __name__ == '__main__':
                 if count == 5:
                     recognized_time = recognized_dict[name]
                     if (frame_time - recognized_time).seconds > 120:
-                        message = "{date} {name} さんが入室しました。".format(date=frame_time.strftime("%H:%M"), name=name)
-                        notifier.notify(message)
-                        print(message)
+                        notifier.notify(frame_time, name)
+                        print("[recognized] {date} {name}".format(date=frame_time.strftime("%H:%M"), name=name))
                     recognized_dict[name] = frame_time
             else:
                 detected_dict[name] = (frame_time, 1)

@@ -6,7 +6,8 @@ class SlackNotifier:
     def __init__(self, webhook_url):
         self.webhook_url = webhook_url
 
-    def notify(self, message):
+    def notify(self, date, name):
+        message = "{date} {name} さんが入室しました。".format(date=date.strftime("%H:%M"), name=name)
         requests.post(self.webhook_url,
                       data=json.dumps({
                           "text": message,
