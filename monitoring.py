@@ -54,7 +54,7 @@ if __name__ == '__main__':
                     if count == 5:
                         if name in recognized_dict:
                             recognized_time = recognized_dict[name]
-                            if (frame_time - recognized_time).seconds > 2:
+                            if (frame_time - recognized_time).minutes > 120:
                                 print("[recognized] {date} {name}"
                                     .format(date=frame_time.strftime("%Y/%m/%d %H:%M"),
                                             name=face_recognizer.face_names))
