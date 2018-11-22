@@ -21,21 +21,44 @@ if __name__ == '__main__':
     image_x = int(cam.get(cv2.CAP_PROP_FRAME_WIDTH))
     image_y = int(cam.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-    print("[log] video info: {}fps {} x {}".format(video_fps, image_x, image_y))
+    print("[log] video info: {:.2f}fps {}x{}".format(video_fps, image_x, image_y))
 
     face_recognizer = FaceRecognizer(args.face, args.tol)
 
+    detected_dict = {}
+    recognized_dict = {}
     while True:
         ret, frame = cam.read()
         if not ret:
+            print("[log] failed to read frame")
             continue
 
+        frame_time = datetime.now()
+
         res_img = face_recognizer.recognize(frame)
+        print("[detected] {date} {name}"
+                .format(date=frame_time.strftime("%Y/%m/%d %H:%M:%S"),
+                        name=face_recognizer.face_names))
 
         for name in face_recognizer.face_names:
-            print("[detected] {date} {name}"
-                  .format(date=datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
-                          name=face_recognizer.face_names))
+            if name is None:
+                continue
+
+            if name in detected_dict:
+                detected_time, count = detected_dict[name]
+                if (frame_time - detected_time).seconds < 1:
+                    count += 1
+                    detected_dict[name] = (detected_time, count)
+                    if count == 5:
+                        recognized_dict[name] = frame_time
+                        print("[recognized] {date} {name}"
+                              .format(date=frame_time.strftime("%Y/%m/%d %H:%M"),
+                                      name=face_recognizer.face_names))
+                else:
+                    detected_dict[name] = (frame_time, 1)
+            else:
+                detected_dict[name] = (frame_time, 1)
+            
 
     cam.release()
     print("[log] exit")
