@@ -6,6 +6,7 @@ import cv2
 
 from face_recognizer import FaceRecognizer
 from slack_notifier import SlackNotifier
+from line_notifier import LineNotifier
 
 
 if __name__ == '__main__':
@@ -14,6 +15,8 @@ if __name__ == '__main__':
     parser.add_argument('--face', type=str, help='face dir path')
     parser.add_argument('--tol', type=float, default=0.50, help='tolerance of recognition')
     parser.add_argument('--slack', type=str, help='slack webhook url')
+    parser.add_argument('--lt', type=str, help='line access token')
+    parser.add_argument('--lu', type=str, help='line user id')
     args = parser.parse_args()
 
     # Open video stream
@@ -27,7 +30,8 @@ if __name__ == '__main__':
 
     # Initialize
     face_recognizer = FaceRecognizer(args.face, args.tol)
-    notifier = SlackNotifier(args.slack)
+    # notifier = SlackNotifier(args.slack)
+    notifier = LineNotifier(args.lt, args.lu)
 
     init_time = datetime(2000, 1, 1)
     detected_dict = dict(zip(face_recognizer.known_names, [(init_time, 0) for i in range(len(face_recognizer.known_names))]))
