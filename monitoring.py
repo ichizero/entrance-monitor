@@ -37,15 +37,26 @@ if __name__ == '__main__':
     detected_dict = dict(zip(face_recognizer.known_names, [(init_time, 0) for i in range(len(face_recognizer.known_names))]))
     recognized_dict = dict(zip(face_recognizer.known_names, [init_time for i in range(len(face_recognizer.known_names))]))
 
+    read_error_count = (init_time, 0)
+
     # Monitoring
     print("[log] Start monitoring...")
     while True:
+        frame_time = datetime.now()
+
         ret, img = cam.read()
         if not ret:
+            error_time, error_count = read_error_count
+            if (frame_time - error_time).seconds < 10:
+                error_count += 1
+                if error_count > 5:
+                    break
+            else:
+                error_time = frame_time
+                error_count = 1
+            read_error_count = (error_time, error_count)
             print("[error] Failed to read")
             continue
-
-        frame_time = datetime.now()
 
         res_img = face_recognizer.recognize(img)
 
@@ -72,4 +83,5 @@ if __name__ == '__main__':
                 detected_dict[name] = (frame_time, 1)
 
     cam.release()
+    notifier.notify(datetime.now(), "System Exit")
     print("[log] Exit")
