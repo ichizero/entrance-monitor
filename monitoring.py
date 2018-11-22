@@ -52,10 +52,19 @@ if __name__ == '__main__':
                     count += 1
                     detected_dict[name] = (detected_time, count)
                     if count == 5:
+                        if name in recognized_dict:
+                            recognized_time = recognized_dict[name]
+                            if (frame_time - recognized_time).seconds > 2:
+                                print("[recognized] {date} {name}"
+                                    .format(date=frame_time.strftime("%Y/%m/%d %H:%M"),
+                                            name=face_recognizer.face_names))
+                            
+
+                        else:
+                            print("[recognized] {date} {name}"
+                                .format(date=frame_time.strftime("%Y/%m/%d %H:%M"),
+                                        name=face_recognizer.face_names))
                         recognized_dict[name] = frame_time
-                        print("[recognized] {date} {name}"
-                              .format(date=frame_time.strftime("%Y/%m/%d %H:%M"),
-                                      name=face_recognizer.face_names))
                 else:
                     detected_dict[name] = (frame_time, 1)
             else:
