@@ -64,6 +64,7 @@ class FaceRecognizer:
             face_image = face_recognition.load_image_file(img_path)
             res_encode = face_recognition.face_encodings(face_image)
             if not res_encode:
+                print("Cannot detect face on {file}".format(file=img_path.name))
                 continue
             face_encoding = res_encode[0]
             known_faces.append(face_encoding)
