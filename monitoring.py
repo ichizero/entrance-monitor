@@ -5,13 +5,15 @@ import argparse
 import cv2
 
 from face_recognizer import FaceRecognizer
+from slack_notifier import SlackNotifier
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='monitoring')
-    parser.add_argument('--url', help='stream url')
-    parser.add_argument('--face', help='face dir path')
+    parser.add_argument('--url', type=str, help='stream url')
+    parser.add_argument('--face', type=str, help='face dir path')
     parser.add_argument('--tol', type=float, default=0.50, help='tolerance of recognition')
+    parser.add_argument('--slack', type=str, help='slack webhook url')
     args = parser.parse_args()
 
     # Open the input movie file
@@ -24,6 +26,7 @@ if __name__ == '__main__':
     print("[log] video info: {:.2f}fps {}x{}".format(video_fps, image_x, image_y))
 
     face_recognizer = FaceRecognizer(args.face, args.tol)
+    notifier = SlackNotifier(args.slack)
 
     detected_dict = {}
     recognized_dict = {}
@@ -55,12 +58,16 @@ if __name__ == '__main__':
                         if name in recognized_dict:
                             recognized_time = recognized_dict[name]
                             if (frame_time - recognized_time).seconds > 120:
+                                notifier.notify("{name} さんが入室しました。"
+                                                .format(name=face_recognizer.face_names))
                                 print("[recognized] {date} {name}"
                                     .format(date=frame_time.strftime("%Y/%m/%d %H:%M"),
                                             name=face_recognizer.face_names))
                             
 
                         else:
+                            notifier.notify("{name} さんが入室しました。"
+                                            .format(name=face_recognizer.face_names))
                             print("[recognized] {date} {name}"
                                 .format(date=frame_time.strftime("%Y/%m/%d %H:%M"),
                                         name=face_recognizer.face_names))
