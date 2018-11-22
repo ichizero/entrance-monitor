@@ -30,7 +30,8 @@ RUN rm /usr/bin/python && \
 RUN pip3 install  --no-cache-dir \
   argparse \
   tqdm \
-  flask
+  flask \
+  requests
 
 RUN cd ~ && \
     mkdir -p dlib && \

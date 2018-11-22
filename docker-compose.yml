@@ -1,0 +1,15 @@
+version: '2.3'
+services:
+  face-recognition:
+    image: ichizero/face-recognition:latest
+    runtime: nvidia
+    container_name: face-recognition
+    environment:
+      - TZ=Asia/Tokyo
+    env_file:
+      - ./proxy.env
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./:/workspace/face-recognition
+    working_dir: /workspace/face-recognition
