@@ -58,19 +58,21 @@ if __name__ == '__main__':
                         if name in recognized_dict:
                             recognized_time = recognized_dict[name]
                             if (frame_time - recognized_time).seconds > 120:
-                                notifier.notify("{name} さんが入室しました。"
-                                                .format(name=face_recognizer.face_names))
+                                notifier.notify("{date} {name} さんが入室しました。"
+                                                .format(date=frame_time.strftime("%Y/%m/%d %H:%M"),
+                                                        name=name))
                                 print("[recognized] {date} {name}"
                                     .format(date=frame_time.strftime("%Y/%m/%d %H:%M"),
-                                            name=face_recognizer.face_names))
+                                            name=name))
                             
 
                         else:
-                            notifier.notify("{name} さんが入室しました。"
-                                            .format(name=face_recognizer.face_names))
+                            notifier.notify("{date} {name} さんが入室しました。"
+                                            .format(date=frame_time.strftime("%Y/%m/%d %H:%M"),
+                                                    name=name))
                             print("[recognized] {date} {name}"
                                 .format(date=frame_time.strftime("%Y/%m/%d %H:%M"),
-                                        name=face_recognizer.face_names))
+                                        name=name))
                         recognized_dict[name] = frame_time
                 else:
                     detected_dict[name] = (frame_time, 1)
