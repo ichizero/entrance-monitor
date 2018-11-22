@@ -1,4 +1,4 @@
-""" """
+""" Monitoring the entrance. """
 import os
 from datetime import datetime
 import argparse
@@ -16,29 +16,34 @@ if __name__ == '__main__':
     parser.add_argument('--slack', type=str, help='slack webhook url')
     args = parser.parse_args()
 
-    # Open the input movie file
+    # Open video stream
     cam = cv2.VideoCapture(args.url)
 
     video_fps = cam.get(cv2.CAP_PROP_FPS)
     image_x = int(cam.get(cv2.CAP_PROP_FRAME_WIDTH))
     image_y = int(cam.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-    print("[log] video info: {:.2f}fps {}x{}".format(video_fps, image_x, image_y))
+    print("[log] Video info: {:.2f}fps {}x{}".format(video_fps, image_x, image_y))
 
+    # Initialize
     face_recognizer = FaceRecognizer(args.face, args.tol)
     notifier = SlackNotifier(args.slack)
 
-    detected_dict = {}
-    recognized_dict = {}
+    init_time = datetime.now()
+    detected_dict = dict(zip(face_recognizer.face_names, [(init_time, 0) for i in range(len(face_recognizer.face_names))]))
+    recognized_dict = dict(zip(face_recognizer.face_names, [(init_time, 0) for i in range(len(face_recognizer.face_names))]))
+
+    # Monitoring
+    print("[log] Start monitoring...")
     while True:
-        ret, frame = cam.read()
+        ret, img = cam.read()
         if not ret:
-            print("[log] failed to read frame")
+            print("[error] Failed to read")
             continue
 
         frame_time = datetime.now()
 
-        res_img = face_recognizer.recognize(frame)
+        res_img = face_recognizer.recognize(img)
 
         if face_recognizer.face_names:
             print("[detected] {date} {name}"
@@ -49,36 +54,19 @@ if __name__ == '__main__':
             if name is None:
                 continue
 
-            if name in detected_dict:
-                detected_time, count = detected_dict[name]
-                if (frame_time - detected_time).seconds < 1:
-                    count += 1
-                    detected_dict[name] = (detected_time, count)
-                    if count == 5:
-                        if name in recognized_dict:
-                            recognized_time = recognized_dict[name]
-                            if (frame_time - recognized_time).seconds > 120:
-                                notifier.notify("{date} {name} さんが入室しました。"
-                                                .format(date=frame_time.strftime("%Y/%m/%d %H:%M"),
-                                                        name=name))
-                                print("[recognized] {date} {name}"
-                                    .format(date=frame_time.strftime("%Y/%m/%d %H:%M"),
-                                            name=name))
-                            
-
-                        else:
-                            notifier.notify("{date} {name} さんが入室しました。"
-                                            .format(date=frame_time.strftime("%Y/%m/%d %H:%M"),
-                                                    name=name))
-                            print("[recognized] {date} {name}"
-                                .format(date=frame_time.strftime("%Y/%m/%d %H:%M"),
-                                        name=name))
-                        recognized_dict[name] = frame_time
-                else:
-                    detected_dict[name] = (frame_time, 1)
+            detected_time, count = detected_dict[name]
+            if (frame_time - detected_time).seconds < 1:
+                count += 1
+                detected_dict[name] = (detected_time, count)
+                if count == 5:
+                    recognized_time = recognized_dict[name]
+                    if (frame_time - recognized_time).seconds > 120:
+                        message = "{date} {name} さんが入室しました。".format(date=frame_time.strftime("%H:%M"), name=name)
+                        notifier.notify(message)
+                        print(message)
+                    recognized_dict[name] = frame_time
             else:
                 detected_dict[name] = (frame_time, 1)
-            
 
     cam.release()
-    print("[log] exit")
+    print("[log] Exit")
