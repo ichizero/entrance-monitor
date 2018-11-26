@@ -7,16 +7,17 @@ import cv2
 from face_recognizer import FaceRecognizer
 from slack_notifier import SlackNotifier
 from line_notifier import LineNotifier
+from data_store import DataStore
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='monitoring')
-    parser.add_argument('--url', type=str, help='stream url')
-    parser.add_argument('--face', type=str, help='face dir path')
-    parser.add_argument('--tol', type=float, default=0.50, help='tolerance of recognition')
-    parser.add_argument('--slack', type=str, help='slack webhook url')
-    parser.add_argument('--lt', type=str, help='line access token')
-    parser.add_argument('--lu', type=str, help='line user id')
+    parser.add_argument('--url', type=str, default=os.environ['CAM_URL'], help='stream url')
+    parser.add_argument('--face', type=str, default="./faces/", help='face dir path')
+    parser.add_argument('--tol', type=float, default=0.40, help='tolerance of recognition')
+    parser.add_argument('--slack', type=str, default=os.environ['SLACK_WEBHOOK_URL'], help='slack webhook url')
+    parser.add_argument('--lt', type=str, default=os.environ['LINE_ACCESS_TOKEN'], help='line access token')
+    parser.add_argument('--lu', type=str, default=os.environ['LINE_USER_ID'], help='line user id')
     args = parser.parse_args()
 
     # Open video stream
@@ -32,6 +33,7 @@ if __name__ == '__main__':
     face_recognizer = FaceRecognizer(args.face, args.tol)
     # notifier = SlackNotifier(args.slack)
     notifier = LineNotifier(args.lt, args.lu)
+    data_store = DataStore()
 
     init_time = datetime(2000, 1, 1)
     detected_dict = dict(zip(face_recognizer.known_names, [(init_time, 0) for i in range(len(face_recognizer.known_names))]))
@@ -77,6 +79,7 @@ if __name__ == '__main__':
                     recognized_time = recognized_dict[name]
                     if (frame_time - recognized_time).seconds > 120:
                         notifier.notify(frame_time, name)
+                        data_store.add(frame_time, name)
                         print("[recognized] {date} {name}".format(date=frame_time.strftime("%H:%M"), name=name))
                     recognized_dict[name] = frame_time
             else:
