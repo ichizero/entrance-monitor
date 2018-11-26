@@ -26,6 +26,6 @@ class DataStore:
     def add(self, time, name):
         doc_ref = self.db.collection('rooms').document('cilab').collection('attendee').document()
         doc_ref.set({
-            "name": "users/" + name,
+            "name": self.db.collection('users').document(name),
             "time": int(time.timestamp())
         })
