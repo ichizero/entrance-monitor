@@ -10,7 +10,7 @@ class DataStore:
             "type": "service_account",
             "project_id": os.environ['FIRESTORE_PROJECT_ID'],
             "private_key_id": os.environ['FIRESTORE_KEY_ID'],
-            "private_key": os.environ['FIRESTORE_KEY'].replace(r"/\\n/g", "\n"),
+            "private_key": os.environ['FIRESTORE_KEY'].replace(r"\n", "\n"),
             "client_email": os.environ['FIRESTORE_CLIENT_EMAIL'],
             "client_id": os.environ['FIRESTORE_CLIENT_ID'],
             "auth_uri": "https://accounts.google.com/o/oauth2/auth",
