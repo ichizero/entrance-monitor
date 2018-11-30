@@ -31,8 +31,8 @@ if __name__ == '__main__':
 
     # Initialize
     face_recognizer = FaceRecognizer(args.face, args.tol)
-    # notifier = SlackNotifier(args.slack)
-    notifier = LineNotifier(args.lt, args.lu)
+    notifier = SlackNotifier(args.slack)
+    # notifier = LineNotifier(args.lt, args.lu)
     data_store = DataStore()
 
     init_time = datetime(2000, 1, 1)
