@@ -1,5 +1,6 @@
 proxy.env
 secret.env
+people.py
 faces/
 
 # Created by https://www.gitignore.io/api/python

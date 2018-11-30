@@ -8,7 +8,7 @@ from face_recognizer import FaceRecognizer
 from slack_notifier import SlackNotifier
 from line_notifier import LineNotifier
 from data_store import DataStore
-
+from people import cilab_people
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='monitoring')
@@ -78,8 +78,11 @@ if __name__ == '__main__':
                 if count == 5:
                     recognized_time = recognized_dict[name]
                     if (frame_time - recognized_time).seconds > 120:
-                        notifier.notify(frame_time, name)
                         data_store.add(frame_time, name)
+                        if (name in cilab_people):
+                            notifier.notify(frame_time, cilab_people[name])
+                        else:
+                            notifier.notify(frame_time, name)
                         print("[recognized] {date} {name}".format(date=frame_time.strftime("%H:%M"), name=name))
                     recognized_dict[name] = frame_time
             else:
