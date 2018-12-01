@@ -60,14 +60,14 @@ if __name__ == '__main__':
             print("[error] Failed to read")
             continue
 
-        face_recognizer.recognize(img)
+        face_names = face_recognizer.recognize(img)
 
-        if face_recognizer.face_names:
+        if face_names:
             print("[detected] {date} {name}"
                   .format(date=frame_time.strftime("%Y/%m/%d %H:%M:%S"),
-                          name=face_recognizer.face_names))
+                          name=face_names))
 
-        for name in face_recognizer.face_names:
+        for name in face_names:
             if name is None:
                 continue
 
