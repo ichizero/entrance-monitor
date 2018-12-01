@@ -63,6 +63,12 @@ def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree
         n_neighbors = int(round(math.sqrt(len(X))))
         if verbose:
             print("Chose n_neighbors automatically:", n_neighbors)
+    else:
+        if verbose:
+            print("n_neighbors:", n_neighbors)
+
+    if verbose:
+        print(y)
 
     # Create and train the KNN classifier
     knn_clf = neighbors.KNeighborsClassifier(n_neighbors=n_neighbors, algorithm=knn_algo, weights='distance')
@@ -78,5 +84,5 @@ def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree
 
 if __name__ == "__main__":
     print("Training KNN classifier...")
-    classifier = train("faces", model_save_path="faces/trained_knn_model.clf", n_neighbors=3, verbose=True)
+    classifier = train("faces", model_save_path="faces/trained_knn_model.clf", verbose=True)
     print("Training complete!")
