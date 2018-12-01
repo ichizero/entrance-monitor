@@ -4,7 +4,7 @@ from datetime import datetime
 import argparse
 import cv2
 
-from face_recognizer import FaceRecognizer
+from face_recognizer_knn import FaceRecognizer
 from slack_notifier import SlackNotifier
 from line_notifier import LineNotifier
 from data_store import DataStore
@@ -13,8 +13,8 @@ from people import cilab_people
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='monitoring')
     parser.add_argument('--url', type=str, default=os.environ['CAM_URL'], help='stream url')
-    parser.add_argument('--face', type=str, default="./faces/", help='face dir path')
-    parser.add_argument('--tol', type=float, default=0.40, help='tolerance of recognition')
+    parser.add_argument('--face', type=str, default="./faces/trained_knn_model.clf", help='face dir path')
+    parser.add_argument('--tol', type=float, default=0.4, help='tolerance of recognition')
     parser.add_argument('--slack', type=str, default=os.environ['SLACK_WEBHOOK_URL'], help='slack webhook url')
     parser.add_argument('--lt', type=str, default=os.environ['LINE_ACCESS_TOKEN'], help='line access token')
     parser.add_argument('--lu', type=str, default=os.environ['LINE_USER_ID'], help='line user id')
@@ -36,8 +36,8 @@ if __name__ == '__main__':
     data_store = DataStore()
 
     init_time = datetime(2000, 1, 1)
-    detected_dict = dict(zip(face_recognizer.known_names, [(init_time, 0) for i in range(len(face_recognizer.known_names))]))
-    recognized_dict = dict(zip(face_recognizer.known_names, [init_time for i in range(len(face_recognizer.known_names))]))
+    detected_dict = dict(zip(cilab_people.keys(), [(init_time, 0) for i in range(len(cilab_people))]))
+    recognized_dict = dict(zip(cilab_people.keys(), [init_time for i in range(len(cilab_people))]))
 
     read_error_count = (init_time, 0)
 
@@ -60,7 +60,7 @@ if __name__ == '__main__':
             print("[error] Failed to read")
             continue
 
-        res_img = face_recognizer.recognize(img)
+        face_recognizer.recognize(img)
 
         if face_recognizer.face_names:
             print("[detected] {date} {name}"
@@ -89,5 +89,5 @@ if __name__ == '__main__':
                 detected_dict[name] = (frame_time, 1)
 
     cam.release()
-    notifier.notify(datetime.now(), "System Exit")
+    # notifier.notify(datetime.now(), "System Exit")
     print("[log] Exit")
