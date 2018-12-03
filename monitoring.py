@@ -1,4 +1,4 @@
-""" Monitoring the entrance. """
+""" Monitoring the entrance """
 import os
 from datetime import datetime
 import argparse
@@ -9,6 +9,7 @@ from slack_notifier import SlackNotifier
 from line_notifier import LineNotifier
 from data_store import DataStore
 from people import cilab_people
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='monitoring')
@@ -51,8 +52,12 @@ if __name__ == '__main__':
             error_time, error_count = read_error_count
             if (frame_time - error_time).seconds < 10:
                 error_count += 1
-                if error_count > 5:
-                    break
+                if error_count > 7:
+                    cam.release()
+                    error_message = "[log] Failed to read frames."
+                    notifier.send(error_message)
+                    print(error_message)
+                    sys.exit(1)
             else:
                 error_time = frame_time
                 error_count = 1
@@ -74,6 +79,9 @@ if __name__ == '__main__':
             if name is None:
                 continue
 
+            if name not in detected_dict:
+                detected_dict[name] = (init_time, 0)
+
             detected_time, count = detected_dict[name]
             if (frame_time - detected_time).seconds < 1:
                 count += 1
@@ -82,7 +90,7 @@ if __name__ == '__main__':
                     recognized_time = recognized_dict[name]
                     if (frame_time - recognized_time).seconds > 120:
                         data_store.add(frame_time, name)
-                        if (name in cilab_people):
+                        if name in cilab_people:
                             notifier.notify(frame_time, cilab_people[name])
                         else:
                             notifier.notify(frame_time, name)
@@ -92,5 +100,4 @@ if __name__ == '__main__':
                 detected_dict[name] = (frame_time, 1)
 
     cam.release()
-    # notifier.notify(datetime.now(), "System Exit")
     print("[log] Exit")

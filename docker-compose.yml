@@ -4,6 +4,7 @@ services:
     image: ichizero/face-recognition:latest
     runtime: nvidia
     container_name: face-recognition
+    restart: always
     environment:
       - TZ=Asia/Tokyo
     env_file:
