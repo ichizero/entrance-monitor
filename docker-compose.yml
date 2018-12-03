@@ -15,4 +15,4 @@ services:
     volumes:
       - ./:/workspace/face-recognition
     working_dir: /workspace/face-recognition
-    entrypoint: python monitoring.py
+    entrypoint: python -u monitoring.py
