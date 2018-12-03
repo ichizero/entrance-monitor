@@ -5,6 +5,8 @@ services:
     runtime: nvidia
     container_name: face-recognition
     restart: always
+    ports:
+      - "5001:5001"
     environment:
       - TZ=Asia/Tokyo
     env_file:
