@@ -23,7 +23,7 @@ class FaceRecognizer:
 
         # If no faces are found in the image, return an empty result.
         if not face_locations:
-            return []
+            return ([], [], [])
 
         face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
 
@@ -32,10 +32,11 @@ class FaceRecognizer:
         are_matches = [closest_distances[0][i][0] <= self.distance_threshold for i in range(len(face_locations))]
 
         # Predict classes and remove classifications that aren't within the threshold
+        pred_names = self.knn_clf.predict(face_encodings)
         face_names = []
-        for pred_name, is_match in zip(self.knn_clf.predict(face_encodings), are_matches):
+        for pred_name, is_match in zip(pred_names, are_matches):
             if is_match:
                 face_names.append(pred_name)
             else:
                 face_names.append(None)
-        return face_names
+        return (face_names, pred_names, closest_distances[0])
