@@ -53,10 +53,10 @@ if __name__ == '__main__':
             error_time, error_count = read_error_count
             if (frame_time - error_time).seconds < 10:
                 error_count += 1
-                if error_count > 7:
+                if error_count > 10:
                     cam.release()
                     error_message = "[log] Failed to read frames."
-                    notifier.send(error_message)
+                    # notifier.send(error_message)
                     print(error_message)
                     sys.exit(1)
             else:
