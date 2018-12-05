@@ -55,7 +55,7 @@ class FaceRecognizer:
         """ Loads known faces. """
         faces_path = Path(self.faces_path)
 
-        img_path_list = [p for p in faces_path.glob("*") if re.search(r"^[^\.]*\.(png|jpg|py)$", str(p.name))]
+        img_path_list = [p for p in faces_path.glob("*") if re.search(r"^[^\.]*\.(png|jpg)$", str(p.name))]
 
         known_faces = []
         known_names = []

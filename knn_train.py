@@ -4,14 +4,12 @@ To train k-nearest-neighbors model.
 """
 
 import math
-import os
-import os.path
+from pathlib import Path
+import re
 import pickle
 from sklearn import neighbors
 import face_recognition
 from face_recognition.face_recognition_cli import image_files_in_folder
-
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 
 def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree', verbose=False):
@@ -38,13 +36,15 @@ def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree
     X = []
     y = []
 
+
     # Loop through each person in the training set
-    for class_dir in os.listdir(train_dir):
-        if not os.path.isdir(os.path.join(train_dir, class_dir)):
+    for class_dir in Path(train_dir).iterdir():
+        if not class_dir.is_dir():
             continue
 
+        img_path_list = [p for p in class_dir.glob("*") if re.search(r"^[^\.]*\.(png|jpg|jpeg|PNG|JPG|JPEG)$", str(p.name))]
         # Loop through each training image for the current person
-        for img_path in image_files_in_folder(os.path.join(train_dir, class_dir)):
+        for img_path in img_path_list:
             image = face_recognition.load_image_file(img_path)
             face_bounding_boxes = face_recognition.face_locations(image)
 
@@ -56,7 +56,7 @@ def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree
             else:
                 # Add face encoding for current image to the training set
                 X.append(face_recognition.face_encodings(image, known_face_locations=face_bounding_boxes)[0])
-                y.append(class_dir)
+                y.append(class_dir.name)
 
     # Determine how many neighbors to use for weighting in the KNN classifier
     if n_neighbors is None:
