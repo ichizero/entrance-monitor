@@ -8,6 +8,8 @@ from pathlib import Path
 import re
 import pickle
 from sklearn import neighbors
+import argparse
+
 import face_recognition
 from face_recognition.face_recognition_cli import image_files_in_folder
 
@@ -83,6 +85,10 @@ def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='knn train')
+    parser.add_argument('--k', type=int, default=2, help='n_neighbors')
+    args = parser.parse_args()
+
     print("Training KNN classifier...")
-    classifier = train("faces", model_save_path="faces/trained_knn_model.clf", verbose=True)
+    classifier = train("faces", model_save_path="faces/trained_knn_model.clf", n_neighbors=args.k, verbose=True)
     print("Training complete!")
