@@ -18,8 +18,9 @@ if __name__ == '__main__':
     parser.add_argument('--face', type=str, default="./faces/trained_knn_model.clf", help='face dir path')
     parser.add_argument('--tol', type=float, default=0.4, help='tolerance of recognition')
     parser.add_argument('--slack', type=str, default=os.environ['SLACK_WEBHOOK_URL'], help='slack webhook url')
-    parser.add_argument('--lt', type=str, default=os.environ['LINE_ACCESS_TOKEN'], help='line access token')
-    parser.add_argument('--lu', type=str, default=os.environ['LINE_USER_ID'], help='line user id')
+    parser.add_argument('--db', action='store_false')
+    # parser.add_argument('--lt', type=str, default=os.environ['LINE_ACCESS_TOKEN'], help='line access token')
+    # parser.add_argument('--lu', type=str, default=os.environ['LINE_USER_ID'], help='line user id')
     args = parser.parse_args()
 
     # Open video stream

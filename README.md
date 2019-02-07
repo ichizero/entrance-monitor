@@ -47,6 +47,22 @@ $ docker-compose up -d
 1. Adds user to Cloud Firestore.
 1. train knn model
 ```bash
-$ docker exec -it face-recognition /bin/bash
-$ python knn_train.py
+$ docker-compose restart
 ```
+
+## env file
+### secret.env
+- LINE_ACCESS_TOKEN
+- LINE_USER_ID
+- SLACK_WEBHOOK_URL
+- CAM_URL
+- FIRESTORE_PROJECT_ID
+- FIRESTORE_KEY_ID
+- FIRESTORE_KEY
+- FIRESTORE_CLIENT_EMAIL
+- FIRESTORE_CLIENT_ID
+- FIRESTORE_CERT_URL
+
+### proxy.env
+http_proxy
+https_proxy
