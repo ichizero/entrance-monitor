@@ -53,7 +53,7 @@ def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree
             if len(face_bounding_boxes) != 1:
                 # If there are no people (or too many people) in a training image, skip the image.
                 if verbose:
-                    print("Image {} not suitable for training: {}".format(
+                    print("[log] Image {} not suitable for training: {}".format(
                         img_path, "Didn't find a face" if len(face_bounding_boxes) < 1 else "Found more than one face"))
             else:
                 # Add face encoding for current image to the training set
@@ -64,10 +64,10 @@ def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree
     if n_neighbors is None:
         n_neighbors = int(round(math.sqrt(len(X))))
         if verbose:
-            print("Chose n_neighbors automatically:", n_neighbors)
+            print("[log] Chose n_neighbors automatically:", n_neighbors)
     else:
         if verbose:
-            print("n_neighbors:", n_neighbors)
+            print("[log] n_neighbors:", n_neighbors)
 
     if verbose:
         print(y)
@@ -89,6 +89,6 @@ if __name__ == "__main__":
     parser.add_argument('--k', type=int, default=2, help='n_neighbors')
     args = parser.parse_args()
 
-    print("Training KNN classifier...")
+    print("[log] Training KNN classifier...")
     classifier = train("faces", model_save_path="faces/trained_knn_model.clf", n_neighbors=args.k, verbose=True)
-    print("Training complete!")
+    print("[log] Training complete!")

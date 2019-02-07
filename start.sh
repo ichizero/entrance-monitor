@@ -1,2 +1,2 @@
 #!/bin/bash
-python knn_train.py && python -u monitoring.py
+python -u knn_train.py && python -u monitoring.py
