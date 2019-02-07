@@ -13,6 +13,15 @@ Monitors labolatory entrance & notifies it.
 $ docker-compose up -d
 ```
 
+To check log
+```bash
+$ docker-compose logs
+or
+$ docker-compose logs | tail
+or
+$ docker-compose logs -f
+```
+
 ## Files
 ```bash
 .
