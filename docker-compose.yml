@@ -3,7 +3,7 @@ services:
   face-recognition:
     image: ichizero/face-recognition:latest
     runtime: nvidia
-    container_name: face-recognition
+    container_name: entrance-monitor
     restart: always
     ports:
       - "5001:5001"
